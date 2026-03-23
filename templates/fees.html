@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up d-flex justify-content-between align-items-center">
+    <div><h4><i class="bi bi-cash-stack me-2 text-primary"></i>Fee Management</h4><p>Track and record student fee payments</p></div>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFeeModal">
+        <i class="bi bi-plus-lg me-1"></i>Record Payment
+    </button>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card bg-grad-green">
+            <i class="bi bi-cash-coin stat-icon"></i>
+            <h6>Total Collected</h6>
+            <h2>₹{{ "{:,.0f}".format(total_collected) }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-grad-orange">
+            <i class="bi bi-clock-history stat-icon"></i>
+            <h6>Fee Pending Students</h6>
+            <h2>{{ students | selectattr('fee_status', 'equalto', 'Pending') | list | length }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-grad-blue">
+            <i class="bi bi-check-circle stat-icon"></i>
+            <h6>Fee Paid Students</h6>
+            <h2>{{ students | selectattr('fee_status', 'equalto', 'Paid') | list | length }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card fade-up">
+    <div class="card-header"><span class="card-icon bg-success-subtle"><i class="bi bi-receipt text-success"></i></span>Payment Records</div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Roll No</th><th>Type</th><th>Amount</th><th>Date</th><th>Transaction ID</th><th>Remarks</th></tr></thead>
+                <tbody>
+                {% for r in records %}
+                <tr>
+                    <td><code>{{ r.roll_no }}</code></td>
+                    <td><span class="badge bg-primary-subtle text-primary">{{ r.fee_type }}</span></td>
+                    <td><strong>₹{{ "{:,.0f}".format(r.amount) }}</strong></td>
+                    <td>{{ r.paid_date }}</td>
+                    <td>{{ r.transaction_id or '—' }}</td>
+                    <td>{{ r.remarks or '—' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-muted py-4">No fee records yet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addFeeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Record Fee Payment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="/add_fee">
+            <div class="modal-body row g-3">
+                <div class="col-12"><label class="form-label">Student *</label>
+                    <select name="roll_no" class="form-select" required>
+                        <option value="">— Select Student —</option>
+                        {% for s in students %}<option value="{{ s.roll_no }}">{{ s.roll_no }} – {{ s.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6"><label class="form-label">Fee Type</label>
+                    <select name="fee_type" class="form-select"><option>Tuition</option><option>Hostel</option><option>Exam</option><option>Library</option><option>Other</option></select>
+                </div>
+                <div class="col-md-6"><label class="form-label">Amount (₹) *</label><input name="amount" type="number" class="form-control" required></div>
+                <div class="col-md-6"><label class="form-label">Payment Date *</label><input name="paid_date" type="date" class="form-control" required></div>
+                <div class="col-md-6"><label class="form-label">Transaction ID</label><input name="transaction_id" class="form-control" placeholder="UPI/Bank ref"></div>
+                <div class="col-12"><label class="form-label">Remarks</label><input name="remarks" class="form-control"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Save Payment</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up">
+    <h4><i class="bi bi-calendar-check me-2 text-primary"></i>Attendance Report</h4>
+    <p>{{ student.name }} ({{ student.roll_no }})</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 text-center">
+        <div class="card p-3">
+            <div class="att-circle mx-auto {% if pct >= 75 %}att-good{% elif pct >= 60 %}att-warn{% else %}att-bad{% endif %}">
+                {{ pct }}%
+            </div>
+            <p class="mt-2 mb-0 fw-semibold">Attendance</p>
+            <small class="text-muted">{{ present }} / {{ total }} classes</small>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card h-100">
+            <div class="card-body">
+                {% if pct >= 75 %}
+                    <div class="alert alert-success"><i class="bi bi-check-circle me-1"></i>Good attendance! Keep it up.</div>
+                {% elif pct >= 60 %}
+                    <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-1"></i>Attendance is below 75%. Attend more classes.</div>
+                {% else %}
+                    <div class="alert alert-danger"><i class="bi bi-x-circle me-1"></i>Critical! Attendance is dangerously low.</div>
+                {% endif %}
+                <div class="progress mt-2">
+                    <div class="progress-bar {% if pct >= 75 %}bg-success{% elif pct >= 60 %}bg-warning{% else %}bg-danger{% endif %}" style="width:{{ pct }}%"></div>
+                </div>
+                <small class="text-muted">75% minimum required</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card fade-up">
+    <div class="card-header">Detailed Records</div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>#</th><th>Date</th><th>Subject</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for r in records %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ r.date }}</td>
+                    <td>{{ r.subject }}</td>
+                    <td>{% if r.status == 'Present' %}<span class="badge bg-success">Present</span>{% else %}<span class="badge bg-danger">Absent</span>{% endif %}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-muted py-4">No records found.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

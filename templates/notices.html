@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up d-flex justify-content-between align-items-center">
+    <div><h4><i class="bi bi-megaphone me-2 text-primary"></i>Notices & Announcements</h4><p>Stay updated with college notices</p></div>
+    {% if role in ['admin', 'faculty'] %}
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNoticeModal">
+        <i class="bi bi-plus-lg me-1"></i>Post Notice
+    </button>
+    {% endif %}
+</div>
+
+<div class="row g-3 fade-up">
+{% for n in notices %}
+<div class="col-md-6">
+    <div class="notice-item {{ n.category|lower }}">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <div class="notice-title">{{ n.title }}</div>
+                <div class="notice-meta mt-1">
+                    <span class="badge bg-secondary me-1">{{ n.category }}</span>
+                    <span class="badge bg-info-subtle text-info me-1">{{ n.target|upper }}</span>
+                    <i class="bi bi-person me-1"></i>{{ n.posted_by }} &nbsp;·&nbsp; {{ n.posted_on }}
+                </div>
+                <p class="mt-2 mb-0" style="font-size:.87rem;color:#334155">{{ n.content }}</p>
+            </div>
+            {% if role == 'admin' %}
+            <a href="/delete_notice/{{ n.id }}" class="btn btn-sm btn-outline-danger ms-2" onclick="return confirm('Delete notice?')"><i class="bi bi-trash"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="col-12 text-center text-muted py-5"><i class="bi bi-megaphone fs-1 d-block mb-2"></i>No notices posted yet.</div>
+{% endfor %}
+</div>
+
+{% if role in ['admin', 'faculty'] %}
+<div class="modal fade" id="addNoticeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Post Notice</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="/add_notice">
+            <div class="modal-body row g-3">
+                <div class="col-12"><label class="form-label">Title *</label><input name="title" class="form-control" required></div>
+                <div class="col-md-6"><label class="form-label">Category</label>
+                    <select name="category" class="form-select"><option>General</option><option>Exam</option><option>Event</option><option>Holiday</option></select>
+                </div>
+                <div class="col-md-6"><label class="form-label">Visible To</label>
+                    <select name="target" class="form-select"><option value="all">All</option><option value="student">Students Only</option><option value="faculty">Faculty Only</option></select>
+                </div>
+                <div class="col-12"><label class="form-label">Content *</label><textarea name="content" class="form-control" rows="4" required></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Post</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

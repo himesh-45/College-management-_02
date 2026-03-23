@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up">
+    <h4><i class="bi bi-person-badge me-2 text-success"></i>Welcome, {{ faculty.name if faculty else session['user'] }}!</h4>
+    <p>Faculty Dashboard — {{ faculty.specialization[:50] if faculty else '' }}</p>
+</div>
+
+<div class="row g-3 mb-4 fade-up">
+    <div class="col-md-3"><div class="stat-card bg-grad-blue"><i class="bi bi-people-fill stat-icon"></i><h6>Students</h6><h2>{{ students|length }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card bg-grad-green"><i class="bi bi-journal-check stat-icon"></i><h6>My Courses</h6><h2>{{ my_courses|length }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card bg-grad-purple"><i class="bi bi-award stat-icon"></i><h6>Performance</h6><h2 style="font-size:1.1rem">{{ faculty.performance if faculty else '—' }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card bg-grad-teal"><i class="bi bi-building stat-icon"></i><h6>Department</h6><h2 style="font-size:1.1rem">{{ faculty.dept_id or faculty.branch if faculty else '—' }}</h2></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header"><span class="card-icon bg-primary-subtle"><i class="bi bi-people text-primary"></i></span>Student List</div>
+            <div class="card-body p-0" style="max-height:350px;overflow-y:auto">
+                <table class="table table-hover mb-0 table-sm">
+                    <thead><tr><th>Roll No</th><th>Name</th><th>Year</th><th>CGPA</th><th>Att Report</th></tr></thead>
+                    <tbody>
+                    {% for s in students %}
+                    <tr>
+                        <td><code>{{ s.roll_no }}</code></td>
+                        <td>{{ s.name }}</td>
+                        <td>{{ s.year }}</td>
+                        <td><span class="badge {% if s.cgpa >= 8 %}bg-success{% elif s.cgpa >= 6 %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ s.cgpa }}</span></td>
+                        <td><a href="/attendance_report/{{ s.roll_no }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-icon bg-warning-subtle"><i class="bi bi-journal-bookmark text-warning"></i></span>My Courses</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Course ID</th><th>Name</th><th>Dept</th><th>Semester</th><th>Credits</th></tr></thead>
+                    <tbody>
+                    {% for c in my_courses %}
+                    <tr><td><code>{{ c.course_id }}</code></td><td>{{ c.name }}</td><td><span class="badge-dept">{{ c.dept_id }}</span></td><td>Sem {{ c.semester }}</td><td>{{ c.credits }}</td></tr>
+                    {% else %}<tr><td colspan="5" class="text-center text-muted py-3">No courses assigned.</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><span class="card-icon bg-danger-subtle"><i class="bi bi-megaphone text-danger"></i></span>Notices</div>
+            <div class="card-body">
+                {% for n in notices %}
+                <div class="notice-item {{ n.category|lower }}">
+                    <div class="notice-title">{{ n.title }}</div>
+                    <div class="notice-meta">{{ n.category }} · {{ n.posted_on }}</div>
+                </div>
+                {% else %}<p class="text-muted text-center">No notices.</p>{% endfor %}
+                <a href="/notices" class="btn btn-outline-primary btn-sm w-100 mt-2">View All</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

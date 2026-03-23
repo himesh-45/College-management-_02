@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up">
+    <h4><i class="bi bi-person-circle me-2 text-primary"></i>Welcome, {{ student.name }}!</h4>
+    <p>{{ student.roll_no }} &nbsp;·&nbsp; {{ dept.name if dept else student.year }}</p>
+</div>
+
+<div class="row g-3 mb-4 fade-up">
+    <div class="col-6 col-md-3">
+        <div class="stat-card bg-grad-blue">
+            <i class="bi bi-star-fill stat-icon"></i>
+            <h6>CGPA</h6>
+            <h2>{{ student.cgpa }}</h2>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card bg-grad-orange">
+            <i class="bi bi-exclamation-circle stat-icon"></i>
+            <h6>Backlogs</h6>
+            <h2>{{ student.backlogs }}</h2>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card {% if att_pct >= 75 %}bg-grad-green{% else %}bg-grad-red{% endif %}">
+            <i class="bi bi-calendar-check stat-icon"></i>
+            <h6>Attendance</h6>
+            <h2>{{ att_pct }}%</h2>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card {% if student.fee_status == 'Paid' %}bg-grad-teal{% else %}bg-grad-orange{% endif %}">
+            <i class="bi bi-cash-coin stat-icon"></i>
+            <h6>Fee Status</h6>
+            <h2 style="font-size:1.3rem">{{ student.fee_status }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- MARKS -->
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header"><span class="card-icon bg-primary-subtle"><i class="bi bi-bar-chart text-primary"></i></span>Semester Marks</div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>Sem</th><th>Sub1</th><th>Sub2</th><th>Sub3</th><th>Sub4</th><th>Sub5</th><th>SGPA</th></tr></thead>
+                        <tbody>
+                        {% for m in marks %}
+                        <tr>
+                            <td>Sem {{ m.semester }}</td>
+                            <td>{{ m.sub1 }}</td><td>{{ m.sub2 }}</td><td>{{ m.sub3 }}</td><td>{{ m.sub4 }}</td><td>{{ m.sub5 }}</td>
+                            <td><span class="badge {% if m.sgpa >= 8 %}bg-success{% elif m.sgpa >= 6 %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ m.sgpa }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="7" class="text-center text-muted py-3">No marks yet.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- NOTICES + FEES -->
+    <div class="col-lg-5">
+        <div class="card mb-3">
+            <div class="card-header"><span class="card-icon bg-warning-subtle"><i class="bi bi-megaphone text-warning"></i></span>Notices</div>
+            <div class="card-body">
+                {% for n in notices %}
+                <div class="notice-item {{ n.category|lower }}">
+                    <div class="notice-title">{{ n.title }}</div>
+                    <div class="notice-meta">{{ n.category }} · {{ n.posted_on }}</div>
+                </div>
+                {% else %}<p class="text-muted text-center">No notices.</p>{% endfor %}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-icon bg-success-subtle"><i class="bi bi-receipt text-success"></i></span>Fee Payments</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Type</th><th>Amount</th><th>Date</th></tr></thead>
+                    <tbody>
+                    {% for f in fees %}
+                    <tr><td>{{ f.fee_type }}</td><td>₹{{ "{:,.0f}".format(f.amount) }}</td><td>{{ f.paid_date }}</td></tr>
+                    {% else %}<tr><td colspan="3" class="text-center text-muted py-2">No payments recorded.</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

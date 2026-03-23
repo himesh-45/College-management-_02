@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up"><h4><i class="bi bi-pencil me-2 text-success"></i>Edit Faculty</h4><p>{{ f.faculty_id }}</p></div>
+<div class="card fade-up">
+    <div class="card-body">
+        <form method="POST" action="/update_faculty/{{ f.faculty_id }}">
+            <div class="row g-3">
+                <div class="col-md-4"><label class="form-label">Name</label><input name="name" class="form-control" value="{{ f.name }}" required></div>
+                <div class="col-md-4"><label class="form-label">Branch</label><input name="branch" class="form-control" value="{{ f.branch }}"></div>
+                <div class="col-md-4"><label class="form-label">Department</label>
+                    <select name="dept_id" class="form-select">
+                        <option value="">— None —</option>
+                        {% for d in departments %}<option value="{{ d.dept_id }}" {% if f.dept_id == d.dept_id %}selected{% endif %}>{{ d.dept_id }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4"><label class="form-label">Salary (₹)</label><input name="salary" type="number" class="form-control" value="{{ f.salary }}"></div>
+                <div class="col-md-4"><label class="form-label">Performance</label>
+                    <select name="performance" class="form-select">
+                        {% for p in ['Excellent','Good','Average'] %}<option {% if f.performance == p %}selected{% endif %}>{{ p }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4"><label class="form-label">Email</label><input name="email" type="email" class="form-control" value="{{ f.email or '' }}"></div>
+                <div class="col-md-4"><label class="form-label">Phone</label><input name="phone" class="form-control" value="{{ f.phone or '' }}"></div>
+                <div class="col-md-4"><label class="form-label">Qualification</label><input name="qualification" class="form-control" value="{{ f.qualification or '' }}"></div>
+                <div class="col-12"><label class="form-label">Specialization</label><input name="specialization" class="form-control" value="{{ f.specialization }}"></div>
+                <div class="col-12"><label class="form-label">Achievements</label><textarea name="achievements" class="form-control" rows="3">{{ f.achievements }}</textarea></div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-success"><i class="bi bi-save me-1"></i>Save Changes</button>
+                <a href="/admin" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

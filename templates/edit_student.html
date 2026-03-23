@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up"><h4><i class="bi bi-pencil me-2 text-primary"></i>Edit Student</h4><p>{{ s.roll_no }}</p></div>
+<div class="card fade-up">
+    <div class="card-body">
+        <form method="POST" action="/update_student/{{ s.roll_no }}">
+            <div class="row g-3">
+                <div class="col-md-4"><label class="form-label">Name</label><input name="name" class="form-control" value="{{ s.name }}" required></div>
+                <div class="col-md-4"><label class="form-label">Year</label>
+                    <select name="year" class="form-select">
+                        {% for y in ['1st Year','2nd Year','3rd Year','4th Year'] %}
+                        <option {% if s.year == y %}selected{% endif %}>{{ y }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4"><label class="form-label">Department</label>
+                    <select name="dept_id" class="form-select">
+                        <option value="">— None —</option>
+                        {% for d in departments %}<option value="{{ d.dept_id }}" {% if s.dept_id == d.dept_id %}selected{% endif %}>{{ d.dept_id }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3"><label class="form-label">Grade</label><input name="grade" class="form-control" value="{{ s.grade }}"></div>
+                <div class="col-md-3"><label class="form-label">Backlogs</label><input name="backlogs" type="number" class="form-control" value="{{ s.backlogs }}" min="0"></div>
+                <div class="col-md-3"><label class="form-label">Email</label><input name="email" type="email" class="form-control" value="{{ s.email or '' }}"></div>
+                <div class="col-md-3"><label class="form-label">Phone</label><input name="phone" class="form-control" value="{{ s.phone or '' }}"></div>
+                <div class="col-md-4"><label class="form-label">Date of Birth</label><input name="dob" type="date" class="form-control" value="{{ s.dob or '' }}"></div>
+                <div class="col-md-4"><label class="form-label">Guardian Name</label><input name="guardian_name" class="form-control" value="{{ s.guardian_name or '' }}"></div>
+                <div class="col-md-4"><label class="form-label">Guardian Phone</label><input name="guardian_phone" class="form-control" value="{{ s.guardian_phone or '' }}"></div>
+                <div class="col-md-4"><label class="form-label">Fee Status</label>
+                    <select name="fee_status" class="form-select">
+                        {% for fs in ['Pending','Paid','Partial'] %}<option {% if s.fee_status == fs %}selected{% endif %}>{{ fs }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Save Changes</button>
+                <a href="/admin" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

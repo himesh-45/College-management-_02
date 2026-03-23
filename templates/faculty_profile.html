@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up"><h4><i class="bi bi-person-badge me-2 text-success"></i>Faculty Profile</h4></div>
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card text-center p-4">
+            <div class="mb-3" style="width:80px;height:80px;background:linear-gradient(135deg,#059669,#34d399);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:2rem;color:#fff">
+                {{ faculty.name[0]|upper if faculty else '?' }}
+            </div>
+            <h5 class="fw-bold">{{ faculty.name }}</h5>
+            <p class="text-muted mb-1"><code>{{ faculty.faculty_id }}</code></p>
+            {% if dept %}<span class="badge-dept">{{ dept.name }}</span>{% else %}<span class="badge bg-secondary">{{ faculty.branch }}</span>{% endif %}
+            <hr>
+            <div class="text-start" style="font-size:.85rem">
+                <div class="mb-1"><i class="bi bi-envelope me-2 text-success"></i>{{ faculty.email or '—' }}</div>
+                <div class="mb-1"><i class="bi bi-phone me-2 text-success"></i>{{ faculty.phone or '—' }}</div>
+                <div class="mb-1"><i class="bi bi-mortarboard me-2 text-success"></i>{{ faculty.qualification or '—' }}</div>
+                <div class="mb-1"><i class="bi bi-calendar me-2 text-success"></i>Joined: {{ faculty.joining_date or '—' }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header">Professional Info</div>
+            <div class="card-body" style="font-size:.875rem">
+                <div class="row g-2">
+                    <div class="col-6"><strong>Performance:</strong> {{ faculty.performance }}</div>
+                    <div class="col-6"><strong>Salary:</strong> ₹{{ "{:,.0f}".format(faculty.salary) if faculty.salary else '—' }}</div>
+                    <div class="col-12"><strong>Specialization:</strong> {{ faculty.specialization }}</div>
+                    <div class="col-12"><strong>Achievements:</strong> {{ faculty.achievements or '—' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

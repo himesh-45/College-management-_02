@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div><h4><i class="bi bi-clock me-2 text-primary"></i>Timetable</h4><p>Class schedule by department & year</p></div>
+    {% if role == 'admin' %}
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTTModal">
+        <i class="bi bi-plus-lg me-1"></i>Add Slot
+    </button>
+    {% endif %}
+</div>
+
+<form method="GET" action="/timetable" class="row g-2 mb-4 fade-up">
+    <div class="col-auto">
+        <select name="dept" class="form-select form-select-sm">
+            <option value="">All Departments</option>
+            {% for d in departments %}<option value="{{ d.dept_id }}" {% if dept_filter == d.dept_id %}selected{% endif %}>{{ d.dept_id }}</option>{% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <select name="year" class="form-select form-select-sm">
+            <option value="">All Years</option>
+            <option {% if year_filter=='1st Year' %}selected{% endif %}>1st Year</option>
+            <option {% if year_filter=='2nd Year' %}selected{% endif %}>2nd Year</option>
+            <option {% if year_filter=='3rd Year' %}selected{% endif %}>3rd Year</option>
+            <option {% if year_filter=='4th Year' %}selected{% endif %}>4th Year</option>
+        </select>
+    </div>
+    <div class="col-auto"><button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-filter me-1"></i>Filter</button></div>
+</form>
+
+<div class="card fade-up">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-bordered mb-0" style="font-size:.82rem">
+                <thead class="table-dark">
+                    <tr><th>Day</th>{% for p in range(1,7) %}<th class="text-center">Period {{ p }}</th>{% endfor %}</tr>
+                </thead>
+                <tbody>
+                {% for day in days %}
+                <tr>
+                    <td class="fw-bold text-primary">{{ day }}</td>
+                    {% for p in range(1,7) %}
+                    <td>
+                        {% set found = namespace(val=false) %}
+                        {% for s in slots %}
+                            {% if s.day == day and s.period == p %}
+                                {% set found.val = true %}
+                                <div class="tt-cell">
+                                    <strong>{{ s.subject }}</strong>
+                                    <small>{{ s.faculty_id }}</small>
+                                    {% if s.time_slot %}<small class="d-block text-muted">{{ s.time_slot }}</small>{% endif %}
+                                </div>
+                                {% if role == 'admin' %}
+                                <a href="/delete_timetable/{{ s.id }}" class="d-block text-center text-danger" style="font-size:.7rem" onclick="return confirm('Remove?')"><i class="bi bi-x-circle"></i></a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not found.val %}<span class="text-muted" style="font-size:.75rem">—</span>{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if role == 'admin' %}
+<div class="modal fade" id="addTTModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Add Timetable Slot</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="/add_timetable">
+            <div class="modal-body row g-3">
+                <div class="col-md-6"><label class="form-label">Department</label>
+                    <select name="dept_id" class="form-select">{% for d in departments %}<option value="{{ d.dept_id }}">{{ d.dept_id }}</option>{% endfor %}</select>
+                </div>
+                <div class="col-md-6"><label class="form-label">Year</label>
+                    <select name="year" class="form-select"><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select>
+                </div>
+                <div class="col-md-6"><label class="form-label">Day</label>
+                    <select name="day" class="form-select"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select>
+                </div>
+                <div class="col-md-3"><label class="form-label">Period</label>
+                    <select name="period" class="form-select">{% for i in range(1,7) %}<option>{{ i }}</option>{% endfor %}</select>
+                </div>
+                <div class="col-md-3"><label class="form-label">Time Slot</label><input name="time_slot" class="form-control" placeholder="9:00–10:00"></div>
+                <div class="col-md-6"><label class="form-label">Subject *</label><input name="subject" class="form-control" required></div>
+                <div class="col-md-6"><label class="form-label">Faculty</label>
+                    <select name="faculty_id" class="form-select"><option value="">—</option>{% for f in faculty_list %}<option value="{{ f.faculty_id }}">{{ f.name }}</option>{% endfor %}</select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

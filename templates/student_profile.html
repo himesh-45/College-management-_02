@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header fade-up"><h4><i class="bi bi-person-circle me-2 text-primary"></i>My Profile</h4></div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card text-center p-4">
+            <div class="mb-3" style="width:80px;height:80px;background:linear-gradient(135deg,#1d4ed8,#38bdf8);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:2rem;color:#fff">
+                {{ student.name[0] | upper }}
+            </div>
+            <h5 class="fw-bold">{{ student.name }}</h5>
+            <p class="text-muted mb-1"><code>{{ student.roll_no }}</code></p>
+            <p class="text-muted mb-1">{{ student.year }}</p>
+            {% if dept %}<span class="badge-dept">{{ dept.name }}</span>{% endif %}
+            <hr>
+            <div class="text-start" style="font-size:.85rem">
+                <div class="mb-1"><i class="bi bi-envelope me-2 text-primary"></i>{{ student.email or '—' }}</div>
+                <div class="mb-1"><i class="bi bi-phone me-2 text-primary"></i>{{ student.phone or '—' }}</div>
+                <div class="mb-1"><i class="bi bi-calendar me-2 text-primary"></i>{{ student.dob or '—' }}</div>
+                <div class="mb-1"><i class="bi bi-geo-alt me-2 text-primary"></i>{{ student.address or '—' }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header">Academic Info</div>
+            <div class="card-body">
+                <div class="row g-2" style="font-size:.875rem">
+                    <div class="col-6"><strong>CGPA:</strong> {{ student.cgpa }}</div>
+                    <div class="col-6"><strong>Grade:</strong> {{ student.grade }}</div>
+                    <div class="col-6"><strong>Backlogs:</strong> {{ student.backlogs }}</div>
+                    <div class="col-6"><strong>Fee Status:</strong> <span class="badge badge-{{ student.fee_status|lower }}">{{ student.fee_status }}</span></div>
+                    <div class="col-6"><strong>Guardian:</strong> {{ student.guardian_name or '—' }}</div>
+                    <div class="col-6"><strong>Guardian Phone:</strong> {{ student.guardian_phone or '—' }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Semester Marks</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Semester</th><th>Sub1</th><th>Sub2</th><th>Sub3</th><th>Sub4</th><th>Sub5</th><th>SGPA</th></tr></thead>
+                    <tbody>
+                    {% for m in marks %}
+                    <tr>
+                        <td>Sem {{ m.semester }}</td>
+                        <td>{{ m.sub1 }}</td><td>{{ m.sub2 }}</td><td>{{ m.sub3 }}</td><td>{{ m.sub4 }}</td><td>{{ m.sub5 }}</td>
+                        <td><strong>{{ m.sgpa }}</strong></td>
+                    </tr>
+                    {% else %}<tr><td colspan="7" class="text-center text-muted py-3">No marks available.</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
