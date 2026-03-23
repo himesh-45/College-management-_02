@@ -45,9 +45,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 For questions or feedback, please reach out:
-- **Email**: your-email@example.com
+- **Email**: dusihimesh@gmail.com
 - **GitHub**: [himesh-45](https://github.com/himesh-45)
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 ## Acknowledgements
 - Thank you to the contributors of this project.
 - Special thanks to the community for their ongoing support and feedback.
+- 
